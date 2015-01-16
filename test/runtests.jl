@@ -1,3 +1,4 @@
+#reload ("DanaTypes.jl/test/DanaTypesTest.jl")
 using DanaTypes
 using Base.Test
 # test DanaBoolean
@@ -22,8 +23,7 @@ di1=DanaInteger((Symbol=>Any)[:Brief=>"test",:Default=>1,:Lower=>-1])
 @test di1.immute.brief=="test"
 set(di1,-1)
 @test di1.value==-1
-ret=set(di1,-2)
-isa(ret,DanaError) ? println(ret[2]) : true
+@test isa(set(di1,-2),DanaError)
 @test di1.value==-1
 di2=DanaInteger((Symbol=>Any)[:Default=>2])
 @test di2.value==2
@@ -45,21 +45,21 @@ set(ds1,1)
 @test ds1.immute.brief=="test"
 set(ds1,-1)
 @test get(ds1)[1]==-1
-ret=set(ds1,-2)
-isa(ret,DanaError) ? println(ret[2]) : true
+ret= set(ds1,-2)
+@test isa(ret,DanaError)
 @test get(ds1)==-1
 @test isequal(ds1,-1)==true
 # test DanaReal
 dr1=DanaReal((Symbol=>Any)[:Brief=>"test",:Default=>1.0,:Lower=>-1.0])
-@test set(dr1,1.0)==1.0
+set(dr1,1.0)
+@test get(dr1)==1.0
 @test dr1.immute.brief=="test"
 set(dr1,-1.0)
 @test get(dr1)==-1.0
-ret=set(dr1,-2.0)
-isa(ret,DanaError) ? println(ret[2]) : true
+@test isa(set(dr1,-2.0),DanaError)
 @test get(dr1)==-1.0
 dr2=DanaReal((Symbol=>Any)[:Default=>2.0])
-@test get(dr2)[1]==nothing
+@test get(dr2)[1]==2.0
 @test dr2.immute.brief=="Real Number" #default brief
 dr3=DanaReal((Symbol=>Any)[])
 @test dr3.value==0.0 #defualt 
@@ -69,5 +69,5 @@ dr4=DanaReal()
 @test dr4.immute.brief=="Real Number" #default brief
 dr5=DanaReal((Symbol=>Any)[:Brief=>"test",:Default=>4.0,:finalBrief=>"finaltest",:finalDefault=>1.0,:Upper=>1.0])
 set(dr5,3.0) #3.0>upper
-@test get(dr5)[1]==nothing #unset 
+@test get(dr5)[1]==1.0 #unset 
 @test dr5.immute.brief=="finaltest" #default brief
