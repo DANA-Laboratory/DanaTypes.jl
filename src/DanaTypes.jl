@@ -50,7 +50,7 @@ module DanaTypes
   
   abstract DanaModel #abstract type for all models
   #################################################################
-  # container for immut datas plus value
+  # container for immute data + value
   # Q is value datatype and must be as immute default datatype
   # R non builtIn datatype
   abstract AbsBulitIns
@@ -69,7 +69,7 @@ module DanaTypes
   end
   #get Dana value
   function get(x::Dana)
-    return x.unset ? nothing : x.value #"value is unset, use immute.default"
+    return x.unset ? x.immute.default : x.value #"if is unset, returns immute.default"
   end
   function unset(x::Dana)
     x.unset=true
@@ -173,7 +173,7 @@ module DanaTypes
   # set Switcher value
   function set(x::DanaSwitcher,y::Any)
     if !in(y,x.immute.valid)
-      return nothing # "in set: invalid value " * string(y)
+      return (nothing,"in set: invalid Switcher value " * string(y))
     else
       x.value=y
       x.unset=false
@@ -183,19 +183,21 @@ module DanaTypes
   typealias DanaRealParametric{R} Dana{_Real,Float64,R}
   typealias DanaReal Dana{_Real,Float64,AbsBulitIns}
   # set Integer,Real value
-	function validate(x::DanaRealParametric)
-		return (y>=x.immute.lower && y<=x.immute.upper)
-	end
   function set(x::DanaRealParametric,y::Float64)
-		x.value=y
-		x.unset=false
+    if !(y>=x.immute.lower && y<=x.immute.upper)
+      return (nothing,"real value is out of bounds")
+    else
+      x.value=y
+      x.unset=false
+    end
   end
-	function validate(x::DanaIntegerParametric)
-		return (y>=x.immute.lower && y<=x.immute.upper)
-	end
   function set(x::DanaIntegerParametric,y::Int)
-		x.value=y
-		x.unset=false
+    if !(y>=x.immute.lower && y<=x.immute.upper)
+      return (nothing,"integer value is out of bounds")
+    else
+      x.value=y
+      x.unset=false
+    end
   end
   #################################################################
   # driving childs from Dana datatypes
@@ -208,5 +210,4 @@ module DanaTypes
     PP=0
     NComp=0
   end
-
 end
