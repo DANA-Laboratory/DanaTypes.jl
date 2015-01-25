@@ -211,3 +211,4 @@ module DanaTypes
     NComp=0
   end
 end
+include ("types.jl")
