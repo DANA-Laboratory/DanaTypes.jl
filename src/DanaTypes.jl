@@ -42,10 +42,12 @@
 #################################################################
 module DanaTypes
   export DanaBoolean,DanaInteger,DanaReal,DanaSwitcher,DanaPlugin,DanaError,AbsBulitIns
-  export drive!,isequal,set,get
+  export drive!,isequal,setfield,get
   export DanaBooleanParametric,DanaIntegerParametric,DanaRealParametric,DanaSwitcherParametric
   export outers
   export DanaModel
+  export isunknown
+  isunknown(var)=isnan(var)
   typealias DanaError (Nothing,String)
   
   abstract DanaModel #abstract type for all models
@@ -69,8 +71,10 @@ module DanaTypes
   end
   #get Dana value
   function get(x::Dana)
-    return x.unset ? x.immute.default : x.value #"if is unset, returns immute.default"
+    return x.unset ? unknown : (x.value==unknown : x.immute.default : x.value) #unset equals unknown, set to unknown equals a default value"
   end
+  #get others
+  get(x::Float64)=x
   function unset(x::Dana)
     x.unset=true
   end
@@ -209,6 +213,9 @@ module DanaTypes
   module outers
     PP=0
     NComp=0
+  end
+  function setfield(danamodel::DanaModel,sy::Symbol,value)
+    isa(danamodel.(sy),Dana) ? set(danamodel.(sy),value) : danamodel.(sy)=value
   end
 end
 include ("types.jl")
