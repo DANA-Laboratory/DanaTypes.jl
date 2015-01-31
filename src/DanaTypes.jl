@@ -42,7 +42,7 @@
 #################################################################
 module DanaTypes
   export DanaBoolean,DanaInteger,DanaReal,DanaSwitcher,DanaPlugin,DanaError,AbsBulitIns
-  export drive!,isequal,setfield,get
+  export drive!,isequal,setfield!,get
   export DanaBooleanParametric,DanaIntegerParametric,DanaRealParametric,DanaSwitcherParametric
   export outers
   export DanaModel
@@ -214,7 +214,7 @@ module DanaTypes
     PP=0
     NComp=0
   end
-  function setfield(danamodel::DanaModel,sy::Symbol,value)
+  function setfield!(danamodel::DanaModel,sy::Symbol,value)
     isa(danamodel.(sy),Dana) ? set(danamodel.(sy),value) : danamodel.(sy)=value
   end
 end
