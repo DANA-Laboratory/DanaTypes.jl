@@ -47,7 +47,6 @@ module DanaTypes
   export outers
   export DanaModel
   export isunknown
-  isunknown(var)=isnan(var)
   typealias DanaError (Nothing,String)
   
   abstract DanaModel #abstract type for all models
@@ -58,12 +57,14 @@ module DanaTypes
   abstract AbsBulitIns
   type Dana{T,Q,R}
     function Dana() 
+      contains(string(R.name),"_constant") ? (unset=false) : (unset=true)
       _immute=is(R,AbsBulitIns) ? T(Dict{Symbol,Any}()) : T(R(Dict{Symbol,Any}()).value)     
-      typeof(_immute)==T ? new (_immute,_immute.default,true) : _immute
+      typeof(_immute)==T ? new (_immute,_immute.default,unset) : _immute
     end
     function Dana(_::Dict{Symbol,Any}) 
+      contains(string(R.name),"_constant") ? (unset=false) : (unset=true)
       _immute=is(R,AbsBulitIns) ? T(_) : T(R(_).value)     
-      typeof(_immute)==T ? new (_immute,_immute.default,true) : _immute
+      typeof(_immute)==T ? new (_immute,_immute.default,unset) : _immute
     end
     immute::T
     value::Q
@@ -71,7 +72,7 @@ module DanaTypes
   end
   #get Dana value
   function get(x::Dana)
-    return x.unset ? unknown : (x.value==unknown : x.immute.default : x.value) #unset equals unknown, set to unknown equals a default value"
+    return x.unset ? Float64(NaN) : (isunknown(x.value) ?  x.immute.default : x.value) #unset equals unknown, set to unknown equals a constant default value"
   end
   #get others
   get(x::Float64)=x
@@ -188,11 +189,16 @@ module DanaTypes
   typealias DanaReal Dana{_Real,Float64,AbsBulitIns}
   # set Integer,Real value
   function set(x::DanaRealParametric,y::Float64)
-    if !(y>=x.immute.lower && y<=x.immute.upper)
-      return (nothing,"real value is out of bounds")
+    isconstant(x) && return (nothing,"cant reset constant") 
+    if isunknown(y)
+      x.unset=true #unset equals unknown
     else
-      x.value=y
-      x.unset=false
+      if !(y>=x.immute.lower && y<=x.immute.upper)
+        return (nothing,"real value is out of bounds")
+      else
+        x.value=y
+        x.unset=false
+      end
     end
   end
   function set(x::DanaIntegerParametric,y::Int)
@@ -217,5 +223,11 @@ module DanaTypes
   function setfield!(danamodel::DanaModel,sy::Symbol,value)
     isa(danamodel.(sy),Dana) ? set(danamodel.(sy),value) : danamodel.(sy)=value
   end
+  ################################################################
+  # isunknown && isconstant
+  isunknown(var::Float64)=isnan(var)
+  isunknown(var::DanaRealParametric)=isnan(var.value)
+  isconstant(var::DanaRealParametric)=(isnan(var.value)&&(!var.unset))
 end
+
 include ("types.jl")
