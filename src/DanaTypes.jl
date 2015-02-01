@@ -47,14 +47,17 @@ module DanaTypes
   export outers
   export DanaModel
   export isunknown
+  export setEquationFlow
   typealias DanaError (Nothing,String)
-  
   abstract DanaModel #abstract type for all models
   #################################################################
   # container for immute data + value
   # Q is value datatype and must be as immute default datatype
   # R non builtIn datatype
   abstract AbsBulitIns
+  
+  setEquationFlow(danamodel::DanaModel)=return nothing #Base method must overloaded  
+  
   type Dana{T,Q,R}
     function Dana() 
       contains(string(R.name),"_constant") ? (unset=false) : (unset=true)
