@@ -58,6 +58,9 @@ module DanaTypes
     # unset equals unknown, set to unknown equals a constant default value
     return x.unset ? Float64(NaN) : (isunknown(x.value) ?  x.immute.default : x.value)
   end
+  function get(x::DanaSwitcher)
+    return x.unset ? x.immute.default : x.value
+  end
   function getbracket(danamodel::DanaModel,fieldname::String)
     danavar = getfield(danamodel,symbol(fieldname))
     return [danavar.immute.lower,danavar.immute.upper]
