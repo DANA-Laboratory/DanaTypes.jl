@@ -56,7 +56,7 @@ module DanaTypes
   get(x::Float64)=x
   function get(x::Dana)
     # unset equals unknown, set to unknown equals a constant default value
-    return x.unset ? Float64(NaN) : (isunknown(x.value) ?  x.immute.default : x.value)
+    return x.unset ? NaN : (isunknown(x.value) ?  x.immute.default : x.value)
   end
   function get(x::DanaSwitcher)
     return x.unset ? x.immute.default : x.value
