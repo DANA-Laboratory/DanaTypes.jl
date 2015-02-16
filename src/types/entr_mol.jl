@@ -51,9 +51,9 @@ type _entr_mol
 		fields::Dict{Symbol,Any}=Dict{Symbol,Any}()
 		fields[:Brief]="Molar Entropy"
 		fields[:Default]=0
-		fields[:Lower]=-1e4
-		fields[:Upper]=1e4
-		fields[:finalUnit]="kJ/kmol/K"
+		fields[:Lower]=-1e7
+		fields[:Upper]=1e7
+		fields[:finalUnit]="J/kmol/K"
 		drive!(fields,_)
 		new(fields)
 	end

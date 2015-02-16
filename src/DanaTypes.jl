@@ -63,11 +63,13 @@ module DanaTypes
   end
   function getbracket(danamodel::DanaModel,fieldname::String)
     danavar = getfield(danamodel,symbol(fieldname))
-    return [danavar.immute.lower,danavar.immute.upper]
+    isa(danavar,Dana) && return [danavar.immute.lower,danavar.immute.upper]
+    return [0.0,2.0e10]
   end
   function getdefault(danamodel::DanaModel,fieldname::String)
     danavar = getfield(danamodel,symbol(fieldname))
-    return danavar.immute.default
+    isa(danavar,Dana) && return danavar.immute.default
+    return 1.0
   end
 ######################## Set ###########################
   function set(x::Dana)
@@ -92,7 +94,7 @@ module DanaTypes
       x.unset=true #unset equals unknown
     else
       if !(y>=x.immute.lower && y<=x.immute.upper)
-        return (nothing,"real value is out of bounds")
+        throw (DomainError())
       else
         x.value=y
         x.unset=false
