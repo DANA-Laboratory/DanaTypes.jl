@@ -65,7 +65,7 @@
 # Difusivity
 # Fugacity
 # Viscosity
-# Molar and Specific Volume 
+# Molar and Specific Volume
 # Others
 export spec_surface_mass
 typealias Danaspec_surface_mass Danapositive
@@ -77,7 +77,7 @@ type _spec_surface_mass
 		fields[:Upper]=1e12
 		fields[:finalUnit]="m^2/kg"
 		drive!(fields,_)
-		new(_positive (fields).value)
+		new(_positive(fields).value)
 	end
 	value::Dict{Symbol,Any}
 end

@@ -9,12 +9,12 @@ type Dana{T,Q,R}
   function Dana()
     contains(string(R.name),"_constant") ? (unset=false) : (unset=true)
     _immute=is(R,AbsBulitIns) ? T(Dict{Symbol,Any}()) : T(R(Dict{Symbol,Any}()).value)
-    typeof(_immute)==T ? new (_immute,_immute.default,unset) : _immute
+    typeof(_immute)==T ? new(_immute,_immute.default,unset) : _immute
   end
   function Dana(_::Dict{Symbol,Any})
     contains(string(R.name),"_constant") ? (unset=false) : (unset=true)
     _immute=is(R,AbsBulitIns) ? T(_) : T(R(_).value)
-    typeof(_immute)==T ? new (_immute,_immute.default,unset) : _immute
+    typeof(_immute)==T ? new(_immute,_immute.default,unset) : _immute
   end
   immute::T
   value::Q
@@ -22,7 +22,7 @@ type Dana{T,Q,R}
 end
 abstract DanaModel #abstract type for all models
 abstract AbsBulitIns
-typealias DanaError (Nothing,String)
+typealias DanaError Tuple{Void,AbstractString}
 typealias DanaBooleanParametric{R} Dana{_Boolean,Bool,R}
 typealias DanaBoolean Dana{_Boolean,Bool,AbsBulitIns}
 typealias DanaIntegerParametric{R} Dana{_Integer,Int,R}
@@ -31,4 +31,3 @@ typealias DanaSwitcherParametric{R} Dana{_Switcher,Any,R}
 typealias DanaSwitcher Dana{_Switcher,Any,AbsBulitIns}
 typealias DanaRealParametric{R} Dana{_Real,Float64,R}
 typealias DanaReal Dana{_Real,Float64,AbsBulitIns}
-

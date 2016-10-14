@@ -1,10 +1,10 @@
 # this file is a part of Dana Virtula Laboratury project
 # author:Reza Afzalan
 # email:RAfzalan@Gmail.com
-# 
+#
 #################################################################
 # this module declares builtin types for Dana virtual laboratory
-# this types must comply requiremnts of EML data model 
+# this types must comply requiremnts of EML data model
 #################################################################
 
 
@@ -41,24 +41,24 @@
 #
 #################################################################
 module DanaTypes
-  include ("immutables.jl")
-  include ("danabase.jl")
-  export get,getbracket,getdefault
+  include("immutables.jl")
+  include("danabase.jl")
+  export getval,getbracket,getdefault
   export setfield!,setEquationFlow
-  export isunknown,isequal
+  export isunknown,equals
   export drive!
   export outers
 
-  setEquationFlow(danamodel::DanaModel)=return nothing #Base method must overloaded  
-  
+  setEquationFlow(danamodel::DanaModel)=return nothing #Base method must overloaded
+
 
 ######################### Get ##########################
-  get(x::Float64)=x
-  function get(x::Dana)
+  getval(x::Float64)=x
+  function getval(x::Dana)
     # unset equals unknown, set to unknown equals a constant default value
     return x.unset ? NaN : (isunknown(x.value) ?  x.immute.default : x.value)
   end
-  function get(x::DanaSwitcher)
+  function getval(x::DanaSwitcher)
     return x.unset ? x.immute.default : x.value
   end
   function getbracket(danamodel::DanaModel,fieldname::String)
@@ -72,14 +72,14 @@ module DanaTypes
     return 1.0
   end
 ######################## Set ###########################
-  function set(x::Dana)
+  function setval!(x::Dana)
     x.unset=false
   end
-  function set(x::DanaBoolean,y::Bool)
+  function setval!(x::DanaBoolean,y::Bool)
       x.value=y
       x.unset=false
   end
-  function set(x::DanaSwitcher,y::Any)
+  function setval!(x::DanaSwitcher,y::Any)
     if !in(y,x.immute.valid)
       return (nothing,"in set: invalid Switcher value " * string(y))
     else
@@ -88,20 +88,20 @@ module DanaTypes
       return y
     end
   end
-  function set(x::DanaRealParametric,y::Float64)
-    isconstant(x) && return (nothing,"cant reset constant") 
+  function setval!(x::DanaRealParametric,y::Float64)
+    isconstant(x) && return (nothing,"cant reset constant")
     if isunknown(y)
       x.unset=true #unset equals unknown
     else
       if !(y>=x.immute.lower && y<=x.immute.upper)
-        throw (DomainError())
+        return(nothing, "out of bounds")
       else
         x.value=y
         x.unset=false
       end
     end
   end
-  function set(x::DanaIntegerParametric,y::Int)
+  function setval!(x::DanaIntegerParametric,y::Int)
     if !(y>=x.immute.lower && y<=x.immute.upper)
       return (nothing,"integer value is out of bounds")
     else
@@ -110,11 +110,11 @@ module DanaTypes
     end
   end
   function setfield!(danamodel::DanaModel,sy::Symbol,value)
-    isa(danamodel.(sy),Dana) ? set(danamodel.(sy),value) : danamodel.(sy)=value
+    isa(danamodel.(sy),Dana) ? set(danamodel.(sy),value) : setfield!(danamodel, sy, value)
   end
 
 ######################## Check #########
-  function isequal(x::DanaSwitcherParametric,y::Any)
+  function equals(x::DanaSwitcherParametric,y::Any)
     return x.unset ? (nothing,"value is unset, use immute.default") : x.value==y
   end
   isunknown(var::Float64)=isnan(var)
@@ -134,4 +134,4 @@ module DanaTypes
 
 end
 
-include ("types.jl")
+include("types.jl")

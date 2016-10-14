@@ -3,7 +3,7 @@
 immutable _Boolean
   _Boolean(_::Dict{Symbol,Any})= begin
     b::String=haskey(_,:finalBrief) ?  _[:finalBrief] : haskey(_,:Brief) ? _[:Brief] : "Boolean Value"
-    d::Bool=haskey(_,:finalDefault) ?  _[:finalDefault] : haskey(_,:Default) ? bool(_[:Default]) : false
+    d::Bool=haskey(_,:finalDefault) ?  _[:finalDefault] : haskey(_,:Default) ? Bool(_[:Default]) : false
     new(b,d)
   end
   brief::String
@@ -14,9 +14,9 @@ end
 immutable _Integer
   _Integer(_::Dict{Symbol,Any}) = begin
     b::String=haskey(_,:finalBrief) ?  _[:finalBrief] : haskey(_,:Brief) ? _[:Brief] : "Integer Number"
-    d::Int=haskey(_,:finalDefault) ?  _[:finalDefault] : haskey(_,:Default) ? integer(_[:Default]) : 0
-    l::Int=haskey(_,:finalLower) ?  _[:finalLower] : haskey(_,:Lower) ? integer(_[:Lower]) : typemin(Int)
-    u::Int=haskey(_,:finalUpper) ?  _[:finalUpper] : haskey(_,:Upper) ? integer(_[:Upper]) : typemax(Int)
+    d::Int=haskey(_,:finalDefault) ?  _[:finalDefault] : haskey(_,:Default) ? Integer(_[:Default]) : 0
+    l::Int=haskey(_,:finalLower) ?  _[:finalLower] : haskey(_,:Lower) ? Integer(_[:Lower]) : typemin(Int)
+    u::Int=haskey(_,:finalUpper) ?  _[:finalUpper] : haskey(_,:Upper) ? Integer(_[:Upper]) : typemax(Int)
     new(b,d,l,u)
   end
   brief::String
@@ -36,7 +36,7 @@ immutable _Switcher
     end
     b::String=haskey(_,:finalBrief) ?  _[:finalBrief] : (haskey(_,:Brief) ? _[:Brief] : "Switcher")
     d=haskey(_,:finalDefault) ?  _[:finalDefault] : _[:Default]
-    e::Set=haskey(_,:finalValid) ?  Set(_[:finalValid]...) : (haskey(_,:Valid) ? Set(_[:Valid]...) : Set())
+    e::Set=haskey(_,:finalValid) ?  Set(_[:finalValid]) : (haskey(_,:Valid) ? Set(_[:Valid]) : Set())
     if !isa(e,Set)
       return nothing #"in Switcher: invalid values, must be a set"
     end
@@ -75,4 +75,3 @@ immutable DanaPlugin
   end
   brief::String
 end
-
